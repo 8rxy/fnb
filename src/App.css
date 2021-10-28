@@ -23,11 +23,25 @@
 	color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
+/* this is to affect everything from the app.js file */
+.fnb {
+	text-align: center;
+	font-size: 30px;
+  }
+
+.login {
+	margin: auto;
+	width: 25%;
+	text-align: left;
+	/*margin-top: -50px;*/
+	
+}
+
+input {
+	font-size: 30px;
+	width: 100%;
+}
+
+Link {
+	text-align: center;
 }
