@@ -1,6 +1,5 @@
 import React from "react";
 
-import exampleTable from "./safe_deposit_boxes.csv"
 
 
 
@@ -10,13 +9,9 @@ const Select = () => {
 		<div>
 			<header>
 			<p>
-				this is the select
+				this is the select test
 			</p>
 			</header>
-
-
-
-
 		</div>
 	);
 }

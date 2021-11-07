@@ -27,8 +27,9 @@
 .fnb {
 	text-align: center;
 	font-size: 30px;
-  }
+}
 
+/* login form */
 .login {
 	margin: auto;
 	width: 25%;
@@ -44,4 +45,19 @@ input {
 
 Link {
 	text-align: center;
+}
+
+button {
+	background-color: #00927a;
+	border: none;
+	color: white;
+	text-align: center;
+	font-size: 24px;
+	padding: 10px 20px;
+	margin-top: 20px;
+}
+
+/* disbaled button when the fields are empty */
+.disabled {
+	background-color: #999999;
 }
