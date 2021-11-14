@@ -40,42 +40,5 @@
 			To create a production bundle, use `npm run build` or `yarn build`.
 		-->
 
-		<!-- from https://www.techiediaries.com/php-react-rest-api-crud-tutorial/ -->
-		<script  type="text/babel">
-
-			class App extends React.Component {
-				state = {
-					main: []
-				}	
-				render() {
-					return (
-						<React.Fragment>
-						<h1>Contact Management</h1>
-						<table border='1' width='100%' >
-						<tr>
-							<th>boxID</th>
-							<th>active</th>
-							<th>owners</th>
-							<th>CIFs</th>
-							<th>notes</th>
-						</tr>
-				
-						{this.state.contacts.map((main) => (
-							<tr>
-								<td>{ main.boxID }</td>
-								<td>{ main.active }</td>
-								<td>{ main.owners }</td>
-								<td>{ main.CIFs }</td>
-								<td>{ main.notes }</td>
-							</tr>
-						))}
-						</table>
-						</React.Fragment>
-					);
-				}
-			}
-		
-			ReactDOM.render(<App />, document.getElementById('root'));
-		</script>
 	</body>
 </html>

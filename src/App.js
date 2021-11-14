@@ -10,16 +10,9 @@ import {
 	Route,
 	Link
 } from "react-router-dom";
-import axios;
 
-// from https://www.techiediaries.com/php-react-rest-api-crud-tutorial/
-function componentDidMount() { 
-	const url = '/apis/main.php'
-	axios.get(url).then(response => response.data).then((data) => {
-		this.setState({ main: data })
-		console.log(this.state.main)
-	})
-}
+
+
 
 const App = () => {
 
