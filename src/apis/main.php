@@ -3,9 +3,9 @@
 	// built from https://www.techiediaries.com/php-react-rest-api-crud-tutorial/
 	
 	// login stuff
-	$host = "localhost:3306"; 
-	$user = "root"; 
-	$password = "Mnbvcxzaq1`"; 
+	$host = "localhost:3306";
+	$user = "root";
+	$password = "Mnbvcxzaq1`";
 	$dbname = "reactdb"; 
 	//$id = ""; // idk what this does
 
