@@ -18,7 +18,9 @@ export default function GuestView() {
 
 	React.useEffect(() => {
 		dispatch(set_guests(chips));
-	})
+	}, [chips]);
+
+
 
 	return (
 		<Grid container>
@@ -26,7 +28,7 @@ export default function GuestView() {
 				<Chips
 					value = {chips}
 					onChange = {(e) => onChange(e)}
-					placeholder = {"type the name & press 'enter' to add"}
+					placeholder = {"type a name & press 'enter' to add"}
 					createChipKeys = {[13]} // specific code for the enter key
 					//input = {<OutlinedInput label = "Owners"/>}
 				/>

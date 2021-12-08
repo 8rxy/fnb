@@ -1,32 +1,57 @@
 /* TODO:
- * add notes column
  * redirect if no login credidentials
+ * make handle close reset box id
  */
 
 import React from "react";
 
-import {useDispatch} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {useState} from "react";
 import {set_box_id} from "../redux/ducks/selectedBoxDetails";
 
-import {Button} from "@mui/material";
+import {alertTitleClasses, Button} from "@mui/material";
 import {GridActionsCellItem} from "@mui/x-data-grid";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 import axios from 'axios';
 
 import Modal from "../elements/Modal"; // popup window
 import ToolbarGrid from "../elements/ToolbarGrid";
+import {
+	Router,
+	BrowserRouter,
+	Switch,
+	Route,
+	Link,
+	Redirect
+} from "react-router-dom";
 
 
 
 
 export default function Boxes() {
 
+
+
+	// redirects if not logged in
+	const selectedBoxDetails = useSelector((state) => state.selectedBoxDetails);
+
+/*
+	if (sessionInfo.employee == null) {
+		//alert("please log in");
+		alert("input: " + sessionInfo.employee)
+		//<Redirect to='/' />
+		window.location.replace("/");
+	}
+
+*/
+	
 	// dispatches action to change a state in redux store
 	const dispatch = useDispatch(); 
 
 	const [open, setOpen] = React.useState(false);
-	const [owners, setOwners] = React.useState([]); // empty array
+	const [owners, setOwners] = React.useState([]);
+	const [CIFs, setCIFs] = React.useState([]);
 
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
@@ -35,20 +60,34 @@ export default function Boxes() {
 	const handleView = (details) => {
 		handleOpen();
 		setOwners(details.owners);
-		dispatch(set_box_id(details.boxid));
+		//setCIFs(details.CIFs)
+		dispatch(set_box_id(details.boxID));
+		//alert("dispatched box id: " + details.boxID);
 	}
 
 	const [columns, setColumns] = useState([
 		{
-			field: "boxid",
+			field: "boxID",
 			headerName: "Box ID",
 			flex: 1, // comparative width
-			//headerClassName: "super-app-theme--header" // unsure
+			headerClassName: "super-app-theme--header" // unsure
 		},
 		{
-			field: "names",
+			field: "owners",
 			headerName: "Owners",
 			flex: 3,
+			headerClassName: "super-app-theme--header"
+		},
+		{
+			field: "CIFs",
+			headerName: "CIFs",
+			flex: 2,
+			headerClassName: "super-app-theme--header"
+		},
+		{
+			field: "notes",
+			headerName: "Notes",
+			flex: 3, 
 			headerClassName: "super-app-theme--header"
 		},
 		// look into a way of getting notes
@@ -59,7 +98,8 @@ export default function Boxes() {
 			type: "actions", // this a thing?
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon = {<Button variant={"text"}>open</Button>}
+					//icon = {<Button variant={"text"}>open</Button>}
+					icon = {<OpenInNewIcon />}
 					label = "open"
 					onClick = {() => {handleView(params.row)}}
 				/>
@@ -67,29 +107,23 @@ export default function Boxes() {
 		}
 	])
 
-	const [rows, setRows] = useState([
-		//{
-		//	id: 1,
-		//	boxid: '1',
-		//	names: ["kamal", "amal", "nimal"],
-		//	owners: [{id: 1, name: "amal", sign: "link1"}, {id: 2, name: "kamal", sign: "link2"}]
-		//}
-	])
+	const [rows, setRows] = useState([])
 
 	React.useEffect(() => {
-		axios.get("http://localhost/backend/api/box/all_owners.php").then(res => {
+		axios.get("http://localhost/backend/api/owners_all.php").then(res => {
 			setRows(res.data.data);
 		}).catch(err => {
-			console.log(err); // ! add more useful alert
-			alert(err)
+			console.log(err);
+			alert("axios error: " + err);
 		});
 	}, []);
 
 	// basic modal 
 	return (
 		<div>
-			<ToolbarGrid columns={columns} rows={rows}/>
-			<Modal open={open} handleClose={handleClose} owners={owners}/>
+			{/*displaySessionInfo()*/}
+			<ToolbarGrid columns={columns} rows={rows} />
+			<Modal open={open} handleClose={handleClose} owners={owners} />
 		</div>
 	)
 }

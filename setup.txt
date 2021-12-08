@@ -1,14 +1,5 @@
 backend:
 	XAMPP/Apache to host files - C:\xampp\htdocs\backend
-	MySQL for the database - just running a server well see
-	
-C:\xampp\apache\conf\extra\httpd-vhosts.conf
-	- directory
-
-C:\Windows\System32\drivers\etc\hosts
-	- servername?
-
-
-
-
-read this: https://getcomposer.org/
+		specify directory - C:\xampp\apache\conf\extra\httpd-vhosts.conf
+		specify server name - C:\Windows\System32\drivers\etc\hosts
+	MySQL for the database - just running a server

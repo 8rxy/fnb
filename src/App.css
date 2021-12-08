@@ -26,7 +26,7 @@
 /* this is to affect everything from the app.js file */
 .fnb {
 	text-align: center;
-	font-size: 30px;
+
 }
 
 /* login form */
@@ -34,8 +34,13 @@
 	margin: auto;
 	width: 25%;
 	text-align: left;
+	
 	/*margin-top: -50px;*/
 	
+}
+
+h2 {
+	font-size: 48px;
 }
 
 input {
@@ -61,4 +66,41 @@ button {
 /* disbaled button when the fields are empty */
 .disabled {
 	background-color: #999999;
+}
+
+
+div#banner {
+	/*left: 0;*/
+	background-color: #232B3E;
+	width: 100%;
+	white-space: nowrap;
+	text-align: left;
+	
+	margin-top: -30px;
+}
+div#banner-content {
+	
+	/*text-align: left;*/
+	
+	margin-bottom: -30px;
+	margin-left: 20px;
+	margin-top: 3px;
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 32px;
+
+	/*width: 1280px;*/
+	/*margin: 0 auto;*/
+	/*padding: 0px;*/
+	/*font-size: 100%;*/
+}
+
+div#banner-text {
+	color: white;	
+	margin-bottom: -30px;
+	margin-left: 20px;
+	margin-top: -10px;
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 32px;
 }
