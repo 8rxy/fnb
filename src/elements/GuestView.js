@@ -1,8 +1,8 @@
 // chip is used to control arrays of data
 
 import React, {useState} from "react";
-import Chips, {Chip} from "react-chips";
-import {Grid, OutlinedInput} from "@mui/material";
+import Chips from "react-chips";
+import {Grid} from "@mui/material";
 import {set_guests} from "../redux/ducks/selectedBoxDetails";
 import {useDispatch} from "react-redux";
 

@@ -1,15 +1,9 @@
-/* TODO:
- * redirect if no login credidentials
- * make handle close reset box id
- */
-
 import React from "react";
 
 import {useSelector, useDispatch} from "react-redux";
 import {useState} from "react";
 import {set_box_id} from "../redux/ducks/selectedBoxDetails";
 
-import {alertTitleClasses, Button} from "@mui/material";
 import {GridActionsCellItem} from "@mui/x-data-grid";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
@@ -17,52 +11,30 @@ import axios from 'axios';
 
 import Modal from "../elements/Modal"; // popup window
 import ToolbarGrid from "../elements/ToolbarGrid";
-import {
-	Router,
-	BrowserRouter,
-	Switch,
-	Route,
-	Link,
-	Redirect
-} from "react-router-dom";
-
-
 
 
 export default function Boxes() {
-
-
-
-	// redirects if not logged in
 	const selectedBoxDetails = useSelector((state) => state.selectedBoxDetails);
 
-/*
-	if (sessionInfo.employee == null) {
-		//alert("please log in");
-		alert("input: " + sessionInfo.employee)
-		//<Redirect to='/' />
+	// redirects if not logged in
+	if (typeof selectedBoxDetails.employee == 'undefined' || selectedBoxDetails.employee === "") {
+		alert("please log in");
 		window.location.replace("/");
 	}
-
-*/
 	
 	// dispatches action to change a state in redux store
 	const dispatch = useDispatch(); 
 
 	const [open, setOpen] = React.useState(false);
 	const [owners, setOwners] = React.useState([]);
-	const [CIFs, setCIFs] = React.useState([]);
 
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 
-	// create view?
 	const handleView = (details) => {
 		handleOpen();
 		setOwners(details.owners);
-		//setCIFs(details.CIFs)
 		dispatch(set_box_id(details.boxID));
-		//alert("dispatched box id: " + details.boxID);
 	}
 
 	const [columns, setColumns] = useState([
@@ -70,7 +42,7 @@ export default function Boxes() {
 			field: "boxID",
 			headerName: "Box ID",
 			flex: 1, // comparative width
-			headerClassName: "super-app-theme--header" // unsure
+			headerClassName: "super-app-theme--header"
 		},
 		{
 			field: "owners",
@@ -90,15 +62,13 @@ export default function Boxes() {
 			flex: 3, 
 			headerClassName: "super-app-theme--header"
 		},
-		// look into a way of getting notes
 		{
 			field: "view",
-			headerName: " ", // maybe can remove
+			headerName: " ",
 			flex: 1,
-			type: "actions", // this a thing?
+			type: "actions",
 			getActions: (params) => [
 				<GridActionsCellItem
-					//icon = {<Button variant={"text"}>open</Button>}
 					icon = {<OpenInNewIcon />}
 					label = "open"
 					onClick = {() => {handleView(params.row)}}
@@ -121,7 +91,6 @@ export default function Boxes() {
 	// basic modal 
 	return (
 		<div>
-			{/*displaySessionInfo()*/}
 			<ToolbarGrid columns={columns} rows={rows} />
 			<Modal open={open} handleClose={handleClose} owners={owners} />
 		</div>

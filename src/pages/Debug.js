@@ -18,9 +18,6 @@ export default function Debug() {
 			<p>global signature data: {JSON.stringify(selectedBoxDetails.signs)}</p>
 			<p>php output: {JSON.stringify(selectedBoxDetails.debug)}</p>
 
-
-
-
 		</div>
 	);
 }

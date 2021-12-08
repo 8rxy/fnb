@@ -1,35 +1,18 @@
-/* TODO:
- * empty selected person list upon closing modal window
- */
 
-// selection stuff: 
-// https://mui.com/components/selects/
-// https://mui.com/api/select/
-// https://mui.com/api/menu-item/#demos
-
-
-import React, { useState } from 'react';
+import React, {useState} from "react";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import GuestView from "./GuestView";
-import {FormControl, InputLabel, MenuItem, OutlinedInput, Select} from "@mui/material";
+import {FormControl, MenuItem, Select} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
 
-import {
-	Router,
-	BrowserRouter,
-	Switch,
-	Route,
-	Link,
-	Redirect,
-	useHistory
-} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {set_available_owners, set_box_id} from "../redux/ducks/selectedBoxDetails";
 
@@ -68,10 +51,11 @@ function getStyles(name, personName, theme) {
 	};
 }
 
+
 export default function BasicModal(props) {
 
 	const theme = useTheme();
-	const [personName, setPersonName] = React.useState([]);
+	const [personName, setPersonName] = useState([]);
 
 	const dispatch = useDispatch();
 	let history = useHistory();
@@ -79,17 +63,13 @@ export default function BasicModal(props) {
 	function submitButton() {
 		if (personName.length !== 0) { 
 			return <Button onClick={handleSubmit} sx={{m:1}} size={"medium"} variant="contained">submit</Button>
-			//return <button onClick={() => handleSubmit()}>submit</button>
 		} else {
 			return <Button sx={{m:1}} size={"medium"} variant="contained" disabled>submit</Button>
-			//return <button className="disabled">submit</button>
 		}
 	}
 
-	//const handleSubmit = () => {
 	function handleSubmit() {
 		dispatch(set_available_owners(personName));
-		
 		history.push("/signs");
 	}
 	
@@ -103,24 +83,23 @@ export default function BasicModal(props) {
 		);
 	};
 
+	function resetSelection() { // reset box & owner selection info when closing window
+		props.handleClose()
+		setPersonName([]);
+		dispatch(set_box_id(""));
+	}
+
 	return (
 		<div>
 			<Modal
 				open = {props.open}
-				onClose = {
-					//setPersonName([]), // reset selected people on window close // also crashes
-					props.handleClose
-				}
+				onClose = {() => resetSelection()}
 				aria-labelledby = "modal-modal-title"
 				aria-describedby = "modal-modal-description"
 
 			>
-				
 				<Box sx={style}>
-					{/*<p>i have been passed {JSON.stringify(props.owners)}</p>*/}
-					
 					<FormControl sx={{width: "100%", mb: "20px"}}>
-
 						<Typography id="modal-modal-title" variant="h6" component="h6">
 							Owners
 						</Typography>
@@ -131,13 +110,12 @@ export default function BasicModal(props) {
 							multiple
 							value = {personName}
 							onChange = {handleChange}
-							//input = {<OutlinedInput label = "Owners"/>}
 							renderValue = {(selected) => selected.join(', ')} // [_]
 							MenuProps = {MenuProps}
 						>
 							{props.owners.map((owner) => (
 								<MenuItem
-									key = {owner} // why does this do nothing
+									key = {owner}
 									value = {owner}
 									test = {owner}
 									style = {getStyles(owner, personName, theme)}
@@ -155,14 +133,9 @@ export default function BasicModal(props) {
 					</Typography>
 					<GuestView />
 
-					
 					{submitButton()}
-
-					{/*<p>personName: {JSON.stringify(personName)}</p>*/}
 				</Box>
 			</Modal>
-			
 		</div>
-
 	);
 }

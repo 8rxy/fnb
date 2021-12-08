@@ -1,57 +1,60 @@
-/* TODO:
- * auto scale signature window, maybe add border
- * confirmation window for approve/deny
- * acquire login data to set employee or maybe do that earlier
- * pretty sure database only keeps 1 signature backwards
- * rename transaction guests field
- */
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import {Button, Grid, TextField, Typography} from "@mui/material";
-import {Link} from "react-router-dom";
+import {Button, Grid} from "@mui/material";
 import {useSelector} from "react-redux";
-import selectedBoxDetails from "../redux/ducks/selectedBoxDetails";
 import React, { useState } from  "react";
-//import history from "./utils/history";
 import {v4 as uuidv4} from "uuid";
 import TransactionView from "../elements/TransactionView";
+import {useHistory} from "react-router-dom";
 
 import axios from "axios";
-import { AltRoute, ApprovalOutlined } from '@mui/icons-material';
 
 export default function CompareSigns() {
 
-
-	const selectedBoxDetails = useSelector((state) => state.selectedBoxDetails);
 	
+	const selectedBoxDetails = useSelector((state) => state.selectedBoxDetails);
+	let history = useHistory();
 
-	const [availableOwners, setAvailableOwners] = useState([]);
+	// redirects if not logged in
+	if (typeof selectedBoxDetails.employee == 'undefined' || selectedBoxDetails.employee === "") {
+		alert("please log in");
+		window.location.replace("/");
+	} else {
+		// redirects if no boxes has been selected yet
+		if (typeof selectedBoxDetails.boxID == 'undefined' || selectedBoxDetails.boxID === "") {
+			alert("please select a box 1st");
+			history.push("/boxes");
+		} else {
+			if (selectedBoxDetails.availableOwners.length === 0) {
+				alert("error in grabbing signature info");
+				history.push("/boxes");
+			}
+		}
+	}
+
+
 	const [transactionID, setTransactionID] = useState(undefined);
-	const [logData, setLogData] = useState({});
-	const [open, setOpen] = React.useState(false);
 
+	const [open, setOpen] = React.useState(false); // for transactions view
+	const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);
 
-	const [previousSigns, setPreviousSigns] = useState([]);
-	const [approved, setApproved] = useState(undefined);
+	const [previousSigns, setPreviousSigns] = useState([]); // acquires previous signatures
 
 	const [transactionData, setTransactionData] = useState({});
 	const [signatureData, setSignatureData] = useState({});
 
 	React.useEffect(() => {
-		setAvailableOwners(selectedBoxDetails.availableOwners);
 		setTransactionID(uuidv4());
 	}, [])
 
-
-	React.useEffect(() => {
+	React.useEffect(() => { // acquire previous signatures of attendees
 		setPreviousSigns([]);
 		selectedBoxDetails.signs.map((signee) => {
 			axios.get(`http://localhost/backend/api/owner_sign.php?id=${signee.CIF}`).then(res => {
 				if (typeof res.data.data != 'undefined') {
 					res.data.data.map((signature) => {
-						//signsTemp.push({"name": signee.name, "CIF": signee.CIF, "timestamp": signature.timestamp, "sign": signature.png});
 						setPreviousSigns(oldArray => [...oldArray, {"name": signee.name, "CIF": signee.CIF, "timestamp": signature.timestamp, "sign": signature.png}]);
-						//alert(JSON.stringify(signsTemp));
 					});
 				}
 			}).catch(err => {
@@ -59,27 +62,7 @@ export default function CompareSigns() {
 				alert("axios error: " + err);
 			}); 
 		})
-		//alert(JSON.stringify(signsTemp));
-		//setPreviousSigns(signsTemp);
 	}, []);
-
-	const handleDeny = () => {
-		//history.push("/boxes");
-		//window.location.replace("/");
-		setApproved(false);
-		alert(approved);
-		handleTransaction();
-	}
-
-	const handleApprove = () => {
-		setApproved(true);
-		
-		alert(approved);
-		if (typeof approved != 'undefined') {
-			handleTransaction();
-		}
-		
-	}
 
 	function handleTransaction(approval) {
 		setTransactionData({
@@ -108,91 +91,65 @@ export default function CompareSigns() {
 		handleOpen();
 	}
 
-
-
-	const handleOpen = () => setOpen(true);
-	const handleClose = () => setOpen(false);
-
-	function handlePreviousSigns(currentCIF) {
-		let filtered = previousSigns.filter((entry) => entry.CIF === currentCIF);
-
-		if (filtered.length === 0 && currentCIF !== "" && currentCIF !== 0) {
-			return <Grid item xs={4} sx={{m: "50px"}}>
-				no previous signatures
-			</Grid>
-		} else {
-			return filtered.map((entry) => {
-				return <Grid item xs={3} sx={{ml: "20px"}}>
-				
-					<img src={entry.sign} style={{border: "1px solid #000", width: '300px', height: '150px'}}/>
-					{entry.timestamp}
+	function showPreviousSigns(currentCIF) {
+		if (currentCIF !== "" && currentCIF !== 0) {
+			let filtered = previousSigns.filter((entry) => entry.CIF === currentCIF);
+			if (filtered.length === 0 && currentCIF !== "" && currentCIF !== 0) {
+				return <Grid item xs={4} sx={{m: "50px"}}>
+					no previous signatures
 				</Grid>
-				/*return <div>
-					<Grid item xs={1} sx={{ml: "250px"}}>
-				
-						<img src={entry.sign} style={{border: "1px solid #000", width: '300px', height: '150px'}}/>
-				
+			} else {
+				return filtered.map((entry) => {
+					return <Grid item xs={3} sx={{ml: "20px"}}>
+					
+						<img alt="loading failed" src={entry.sign} style={{border: "1px solid #000", width: '300px', height: '150px'}}/>
+						{entry.timestamp}
 					</Grid>
-					{entry.timestamp}
-				</div>*/
-			})
+				})
+			}
+		}
+	}
+
+	function showName(currentOwner) {
+		if (currentOwner.CIF !== "" && currentOwner.CIF !== 0) {
+			return <Grid item xs={12} sx={{ fontWeight: "bold"}}>{currentOwner.name}</Grid>
+		} else {
+			return <Grid item xs={12} sx={{ fontWeight: "bold"}}>{currentOwner.name} (guest)</Grid>
 		}
 	}
 
 	return (
 		<div>
-		<p>available owners: {JSON.stringify(selectedBoxDetails.availableOwners)}</p>
-		<p>available guests: {JSON.stringify(selectedBoxDetails.guests)}</p>
-		<p>state signs: {JSON.stringify(selectedBoxDetails.signs)}</p>
-		<p>previous: {JSON.stringify(previousSigns)}</p>
-		<p>transaction id: {JSON.stringify(transactionID)}</p>
-
-		<Grid container spacing={3}>
-			<Grid item xs={12}>
-				<Box sx={{
-					display: 'flex',
-					flexDirection: 'column',
-					/*flexWrap: 'wrap', '& > :not(style)': {
-						m: 1,
-						width: 1000,
-						height: 228,
-					},*/
-				}}>
-					{selectedBoxDetails.signs.map((owner) => {
-						return <div>
-							<Paper elevation={3} sx={{p: 1}}>
-								<Grid container spacing={3} columnSpacing={20}>
-									<Grid item xs={12} sx={{ fontWeight: 'bold' }}>{owner.name}</Grid>
-									<Grid item xs={1} sx={{mr: "133px"}}>
-										<img src={owner.sign} style={{border: "1px solid #000", width: '300px', height: '150px'}}/>
-										Current
-									</Grid>
-									
-									{/*filtered = previousSigns.filter((entry) => entry.CIF === owner.CIF);
-									previousSigns.map((entry) => {
-										return <Grid item xs={1} sx={{ml: "250px"}}>
-										
-											<img src={entry.sign} style={{border: "1px solid #000", width: '300px', height: '150px'}}/>
-											{JSON.stringify(entry.timestamp)}
+			<Grid container spacing={3}>
+				<Grid item xs={12}>
+					<Box sx={{
+						display: 'flex',
+						flexDirection: 'column',
+					}}>
+						{selectedBoxDetails.signs.map((owner) => {
+							return <div>
+								<Paper elevation={3} sx={{p: 1}}>
+									<Grid container spacing={3} columnSpacing={20}>
+										{showName(owner)}
+										<Grid item xs={1} sx={{mr: "133px"}}>
+											<img alt="loading failed" src={owner.sign} style={{border: "1px solid #000", width: '300px', height: '150px'}}/>
+											Current
 										</Grid>
-									})*/}
+										
+										{showPreviousSigns(owner.CIF)}
 
-									{handlePreviousSigns(owner.CIF)}
-
-									
-
-								</Grid>
-							</Paper>
-						</div>
-					})}
-				</Box>
+									</Grid>
+								</Paper>
+							</div>
+						})}
+					</Box>
+				</Grid>
+				<Grid item xs={12}>
+					<Button sx={{ml: 4}} onClick={() => handleTransaction(1)} variant={'contained'} size={'large'}>approve</Button>
+					<Button sx={{ml: 4}} onClick={() => handleTransaction(0)} to={'/boxes'} size={'large'}>deny</Button>
+				</Grid>
+				<TransactionView transactionData={transactionData} signatureData={signatureData} open={open} handleClose={handleClose}/>
 			</Grid>
-			<Grid item xs={12}>
-				<Button sx={{ml: 4}} onClick={() => handleTransaction(true)} variant={'contained'} size={'large'}>approve</Button>
-				<Button sx={{ml: 4}} onClick={() => handleTransaction(false)} to={'/boxes'} size={'large'}>deny</Button>
-			</Grid>
-			<TransactionView transactionData={transactionData} signatureData={signatureData} open={open} handleClose={handleClose}/>
-		</Grid>
 		</div>
 	);
 }

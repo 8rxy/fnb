@@ -1,40 +1,21 @@
-/* TODO:
- * make authentication
- */
-
 import React, { useState } from 'react';
-import {Button, Grid, TextField, Typography} from "@mui/material";
-//import {set_employee} from "../redux/ducks/sessionInfo";
+import {Button, TextField} from "@mui/material";
 import {set_employee} from "../redux/ducks/selectedBoxDetails";
-import {useSelector, useDispatch} from "react-redux";
-import {
-	Router,
-	BrowserRouter,
-	Switch,
-	Route,
-	Link,
-	Redirect,
-	useHistory
-} from "react-router-dom";
-
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 
 const Login = () => {
 	let history = useHistory();
 
 	const dispatch = useDispatch();
-	//const sessionInfo = useSelector((state) => state.sessionInfo);
-	const selectedBoxDetails = useSelector((state) => state.selectedBoxDetails);
 
 	// holds the username & password variables
 	const [login, setLogin] = useState({username: "", password: ""});
 
 	function loginButton() {
-		//return <Link to="/select">login</Link>;
 		if (login.username !== "" && login.password !== "") {
-			//return <button onClick={() => tryLogin()}>login</button>
 			return <Button onClick={tryLogin} sx={{m:1, mt: 5}} size={"medium"} variant="contained">login</Button>
 		} else {
-			//return <button className="disabled">login</button>
 			return <Button sx={{m:1, mt: 5}} size={"medium"} variant="contained" disabled>login</Button>
 		}
 	}
@@ -43,8 +24,6 @@ const Login = () => {
 	function tryLogin() {
 		if (auth(login.username, login.password)) {
 			dispatch(set_employee(login.username));
-			//window.location.replace("/boxes"); // doesnt retain state
-			//<Redirect to='/boxes' /> // doesnt work
 			history.push("/boxes");
 		} else {
 			alert("incorrect login information");
@@ -53,15 +32,13 @@ const Login = () => {
 
 	// replace later
 	function auth(user, pass) {
-		return (user === "test" && pass === "test");
+		return (user === "tester" && pass === "test");
 	}
-
 
 	return (
 		<div>
 			<h2>Deposit Box System</h2>
 				<div className="login">
-
 					<TextField
 						id = "username"
 						name = "username"
@@ -87,9 +64,6 @@ const Login = () => {
 				</div>
 
 				{loginButton()}
-
-				{/*<p>{JSON.stringify(login)}</p>*/}
-
 		</div>
 	);
 }

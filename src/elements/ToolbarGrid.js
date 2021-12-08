@@ -1,6 +1,4 @@
-import { bottomNavigationActionClasses } from "@mui/material";
-import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarFilterButton, GridToolbarColumnsButton} from "@mui/x-data-grid";
-import { useDemoData } from '@mui/x-data-grid-generator';
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridToolbarColumnsButton} from "@mui/x-data-grid";
 import Stack from '@mui/material/Stack';
 
 
